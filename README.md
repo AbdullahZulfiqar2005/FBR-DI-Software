@@ -1,5 +1,3 @@
-Here is the complete code for your `README.md` file. You can copy and paste this directly.
-
 # FBR Digital Invoicing Software
 
 A Flask-based application for generating FBR-compliant digital invoices with QR codes (Version 2.0).
