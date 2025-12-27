@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBR Invoice Integration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .scenario-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 140px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, #7c92f5 0%, #8b5fc2 100%);
+        }
+        
+        .scenario-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scenario-card .scenario-name {
+            font-size: 1em;
+            opacity: 1;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .scenario-card .scenario-desc {
+            font-size: 0.88em;
+            opacity: 0.95;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇵🇰 FBR Invoice Integration</h1>
+        <p class="subtitle">Federal Board of Revenue - Sales Tax Invoice Portal</p>
+        
+        <div class="info-box">
+            <p><strong>Welcome!</strong> Select a scenario to submit your sales invoice to FBR. All 12 scenarios are now available for integration.</p>
+        </div>
+        
+        <div class="scenarios">
+            <a href="/form/SN001" class="scenario-card">
+                <h3>SN001</h3>
+                <p class="scenario-name">Sale Invoice - Standard</p>
+                <p class="scenario-desc">Registered buyer at standard rate</p>
+            </a>
+            
+            <a href="/form/SN002" class="scenario-card">
+                <h3>SN002</h3>
+                <p class="scenario-name">Standard Rate - Unregistered (B2C)</p>
+                <p class="scenario-desc">Sale to consumer at 18% standard rate</p>
+            </a>
+            
+            <a href="/form/SN005" class="scenario-card">
+                <h3>SN005</h3>
+                <p class="scenario-name">Sale Invoice - Reduced Rate</p>
+                <p class="scenario-desc">Unregistered buyer at reduced rate</p>
+            </a>
+            
+            <a href="/form/SN006" class="scenario-card">
+                <h3>SN006</h3>
+                <p class="scenario-name">Sale Invoice - Exempt</p>
+                <p class="scenario-desc">Registered buyer with exempt goods</p>
+            </a>
+            
+            <a href="/form/SN007" class="scenario-card">
+                <h3>SN007</h3>
+                <p class="scenario-name">Sale Invoice - Zero Rate</p>
+                <p class="scenario-desc">Unregistered buyer at zero rate</p>
+            </a>
+            
+            <a href="/form/SN008" class="scenario-card">
+                <h3>SN008</h3>
+                <p class="scenario-name">Sale Invoice - 3rd Schedule</p>
+                <p class="scenario-desc">Unregistered buyer with 3rd schedule goods</p>
+            </a>
+            
+            <a href="/form/SN016" class="scenario-card">
+                <h3>SN016</h3>
+                <p class="scenario-name">Processing/Conversion</p>
+                <p class="scenario-desc">Processing or conversion of goods at 5%</p>
+            </a>
+            
+            <a href="/form/SN017" class="scenario-card">
+                <h3>SN017</h3>
+                <p class="scenario-name">FED in ST Mode</p>
+                <p class="scenario-desc">Goods with FED in sales tax mode at 8%</p>
+            </a>
+            
+            <a href="/form/SN024" class="scenario-card">
+                <h3>SN024</h3>
+                <p class="scenario-name">SRO 297(I)/2023</p>
+                <p class="scenario-desc">Goods as per SRO 297(I)/2023 at 25%</p>
+            </a>
+            
+            <a href="/form/SN026" class="scenario-card">
+                <h3>SN026</h3>
+                <p class="scenario-name">Standard Sale - Variant</p>
+                <p class="scenario-desc">Standard rate sale with invoice reference</p>
+            </a>
+            
+            <a href="/form/SN027" class="scenario-card">
+                <h3>SN027</h3>
+                <p class="scenario-name">3rd Schedule - Standard</p>
+                <p class="scenario-desc">3rd schedule goods at standard rate</p>
+            </a>
+            
+            <a href="/form/SN028" class="scenario-card">
+                <h3>SN028</h3>
+                <p class="scenario-name">Reduced Rate - Fixed Price</p>
+                <p class="scenario-desc">Reduced rate with fixed notified value</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

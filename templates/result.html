@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FBR Submission Result</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .success {
+        color: #28a745;
+      }
+
+      .error {
+        color: #dc3545;
+      }
+
+      .status-box {
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 1.2em;
+      }
+
+      .status-box.success {
+        background: #d4edda;
+        border: 2px solid #28a745;
+        color: #155724;
+      }
+
+      .status-box.error {
+        background: #f8d7da;
+        border: 2px solid #dc3545;
+        color: #721c24;
+      }
+
+      .section {
+        background: #f8f9fa;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .section-title {
+        color: #667eea;
+        font-size: 1.3em;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .info-row {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: #555;
+      }
+
+      .info-value {
+        color: #333;
+        word-break: break-all;
+      }
+
+      pre {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.9em;
+        line-height: 1.5;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        margin: 10px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .actions {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .back-link {
+        display: inline-block;
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 20px;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      .status-code {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-left: 10px;
+      }
+
+      .status-code.success {
+        background: #28a745;
+        color: white;
+      }
+
+      .status-code.error {
+        background: #dc3545;
+        color: white;
+      }
+    </style>
+  </head>
+ <body>
+  <div class="container">
+    <a href="/" class="back-link">← Back to Home</a>
+
+    {% if result.success %}
+      <h1 class="success">✓ Submission Successful!</h1>
+      <div class="status-box success">
+        <strong>Your invoice has been successfully submitted to FBR</strong>
+        {% if result.status_code %}
+          <span class="status-code success">{{ result.status_code }}</span>
+        {% endif %}
+      </div>
+
+      {% if invoice_id %}
+      <div class="actions">
+        <a
+          href="{{ url_for('print_invoice', invoice_id=invoice_id) }}/pdf"
+          target="_blank"
+          class="btn btn-primary"
+        >
+          Print / Save Invoice
+        </a>
+      </div>
+      {% endif %}
+
+    {% else %}
+      <h1 class="error">✗ Submission Failed</h1>
+      <div class="status-box error">
+        <strong>There was an error submitting your invoice</strong>
+        {% if result.status_code %}
+          <span class="status-code error">{{ result.status_code }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if result.error %}
+    <div class="section">
+      <div class="section-title">Error Details</div>
+
+      {% if result.error.errorMessage %}
+        <div class="info-row">
+          <div class="info-label">Message:</div>
+          <div class="info-value">{{ result.error.errorMessage }}</div>
+        </div>
+      {% else %}
+        <div class="info-row">
+          <div class="info-label">Error:</div>
+          <div class="info-value">{{ result.error }}</div>
+        </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if result.status_code %}
+    <div class="section">
+      <div class="section-title">Response Details</div>
+      <div class="info-row">
+        <div class="info-label">Status Code:</div>
+        <div class="info-value">{{ result.status_code }}</div>
+      </div>
+
+      {% if result.response_data %}
+      <div class="section-title" style="margin-top: 20px">
+        Response Data
+      </div>
+      <pre>{{ result.response_data | tojson(indent=2) }}</pre>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if result.request_payload %}
+    <div class="section">
+      <div class="section-title">Request Payload Sent</div>
+      <pre>{{ result.request_payload | tojson(indent=2) }}</pre>
+    </div>
+    {% endif %}
+
+    {% if result.response_headers %}
+    <div class="section">
+      <div class="section-title">Response Headers</div>
+      <pre>{{ result.response_headers | tojson(indent=2) }}</pre>
+    </div>
+    {% endif %}
+
+    <div class="actions">
+      <a href="javascript:history.back()" class="btn btn-secondary">
+        Go Back
+      </a>
+      <a href="/" class="btn btn-primary">
+        New Submission
+      </a>
+    </div>
+  </div>
+</body>
+
+</html>

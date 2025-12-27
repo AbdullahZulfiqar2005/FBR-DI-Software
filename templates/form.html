@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBR {{ scenario_id }} - Invoice Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            color: #555;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section-title {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        
+        .items-container {
+            margin-top: 20px;
+        }
+        
+        .item-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            position: relative;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .item-title {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.9em;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Scenarios</a>
+        
+        <h1>{{ scenario_id }} - {{ scenario.name }}</h1>
+        <p class="description">{{ scenario.description }}</p>
+        
+        <!-- Scenario Information -->
+        {% if scenario.info %}
+        <div class="info-box">
+            <h3>📋 Scenario {{ scenario_id }} - {{ scenario.info.title }}</h3>
+            <ul>
+                {% for point in scenario.info.points %}
+                <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <form action="/submit/{{ scenario_id }}" method="POST">
+            <!-- API Configuration Section -->
+            <div class="section">
+                <div class="section-title">API Configuration</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="api_url">FBR API URL *</label>
+                        <input type="url" id="api_url" name="api_url" required 
+                               placeholder="https://api.fbr.gov.pk/...">
+                    </div>
+                    <div class="form-group">
+                        <label for="bearer_token">Bearer Token *</label>
+                        <input type="text" id="bearer_token" name="bearer_token" required 
+                               placeholder="Enter your token(without Bearer keyword)">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Invoice Details Section -->
+            <div class="section">
+                <div class="section-title">Invoice Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="invoiceType">Invoice Type</label>
+                        <input type="text" id="invoiceType" name="invoiceType" value="Sale Invoice" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceDate">Invoice Date *</label>
+                        <input type="date" id="invoiceDate" name="invoiceDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceRefNo">Invoice Reference No.</label>
+                        <input type="text" id="invoiceRefNo" name="invoiceRefNo" 
+                               placeholder="e.g., SI-20250101-001">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seller Details Section -->
+            <div class="section">
+                <div class="section-title">Seller Details (Your Business)</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sellerBusinessName">Business Name *</label>
+                        <input type="text" id="sellerBusinessName" name="sellerBusinessName" required
+                               placeholder="e.g., Your company name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sellerNTNCNIC">NTN/CNIC *</label>
+                        <input type="text" id="sellerNTNCNIC" name="sellerNTNCNIC" required
+                               placeholder="e.g., CNIC/NTN">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sellerProvince">Province *</label>
+                        <select id="sellerProvince" name="sellerProvince" required>
+                            <option value="">Select Province</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Sindh">Sindh</option>
+                            <option value="KPK">KPK</option>
+                            <option value="Balochistan">Balochistan</option>
+                            <option value="ICT">ICT (Islamabad)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sellerAddress">Address *</label>
+                        <input type="text" id="sellerAddress" name="sellerAddress" required
+                               placeholder="e.g., Plot 123, Main Road, Karachi">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Buyer Details Section -->
+<div class="section">
+    <div class="section-title">Buyer Details</div>
+
+    <!-- Buyer Type Dropdown -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="buyerType">Buyer Type *</label>
+            <select id="buyerType" name="buyerType" required>
+                <option value="">Select Type</option>
+                <option value="Registered" {% if scenario.buyer_type == 'Registered' %}selected{% endif %}>Registered</option>
+                <option value="Unregistered" {% if scenario.buyer_type == 'Unregistered' %}selected{% endif %}>Unregistered</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Buyer Details -->
+    <div class="form-row">
+        <div class="form-group">
+            <label id="buyerNameLabel" for="buyerBusinessName">Name/Business Name *</label>
+            <input type="text" id="buyerBusinessName" name="buyerBusinessName" required
+                   placeholder=" ">
+        </div>
+        <div class="form-group">
+            <label id="buyerNTNLabel" for="buyerNTNCNIC">CNIC/NTN *</label>
+            <input type="text" id="buyerNTNCNIC" name="buyerNTNCNIC" required
+                   placeholder="CNIC/NTN">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="buyerProvince">Province *</label>
+            <select id="buyerProvince" name="buyerProvince" required>
+                <option value="">Select Province</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Sindh">Sindh</option>
+                <option value="KPK">KPK</option>
+                <option value="Balochistan">Balochistan</option>
+                <option value="ICT">ICT (Islamabad)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="buyerAddress">Address *</label>
+            <input type="text" id="buyerAddress" name="buyerAddress" required
+                   placeholder="e.g., House 123, Street 5, Karachi">
+        </div>
+    </div>
+</div>
+
+<script>
+    const buyerTypeSelect = document.getElementById('buyerType');
+    const buyerNameLabel = document.getElementById('buyerNameLabel');
+    const buyerNTNLabel = document.getElementById('buyerNTNLabel');
+    const buyerNameInput = document.getElementById('buyerBusinessName');
+    const buyerNTNInput = document.getElementById('buyerNTNCNIC');
+    const buyerAddressInput = document.getElementById('buyerAddress');
+
+    function updateBuyerFields() {
+        const type = buyerTypeSelect.value;
+        if(type === 'Registered') {
+            buyerNameLabel.textContent = 'Business Name *';
+            buyerNTNLabel.textContent = 'NTN/CNIC *';
+            buyerNameInput.placeholder = 'e.g., XYZ Industries';
+            buyerNTNInput.placeholder = 'e.g., 2046004 (NTN)';
+            buyerAddressInput.placeholder = 'e.g., Industrial Area, Lahore';
+        } else if(type === 'Unregistered') {
+            buyerNameLabel.textContent = 'Name/Business Name *';
+            buyerNTNLabel.textContent = 'CNIC/NTN *';
+            buyerNameInput.placeholder = 'e.g., John Doe / ABC Store';
+            buyerNTNInput.placeholder = 'e.g., 1234567 (CNIC or NTN)';
+            buyerAddressInput.placeholder = 'e.g., House 123, Street 5, Karachi';
+        }
+    }
+
+    // Initialize fields on page load
+    updateBuyerFields();
+
+    buyerTypeSelect.addEventListener('change', updateBuyerFields);
+</script>
+
+            
+            <!-- Items Section -->
+            <div class="section">
+                <div class="section-title">
+                    Invoice Items
+                    {% if scenario.sale_type %}
+                    ({{ scenario.sale_type }})
+                    {% endif %}
+                </div>
+                <button type="button" class="btn btn-success" onclick="addItem()">+ Add Item</button>
+                <div id="itemsContainer" class="items-container"></div>
+            </div>
+            
+            <div class="submit-section">
+                <button type="submit" class="btn btn-primary">Submit to FBR</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        let itemCount = 0;
+        const scenarioId = "{{ scenario_id }}";
+        const taxRate = "{{ scenario.tax_rate if scenario.tax_rate else '18%' }}";
+        const saleType = "{{ scenario.sale_type if scenario.sale_type else 'Goods at standard rate (default)' }}";
+        
+        // Define Default SRO Values for each Scenario
+        const SRO_DEFAULTS = {
+            "SN005": { schedule: "EIGHTH SCHEDULE Table 1", serial: "82" },
+            "SN006": { schedule: "6th Schd Table I", serial: "100" },
+            "SN007": { schedule: "327(I)/2008", serial: "1" },
+            "SN024": { schedule: "297(I)/2023-Table-I", serial: "12" },
+            "SN028": { schedule: "EIGHTH SCHEDULE Table 1", serial: "70" }
+        };
+
+        // Set today's date as default
+        document.getElementById('invoiceDate').valueAsDate = new Date();
+        
+        function addItem() {
+            const container = document.getElementById('itemsContainer');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item-card item-row';
+            itemDiv.id = `item_${itemCount}`;
+            
+            // Get SRO defaults for current scenario (or empty strings if none exist)
+            const currentSRO = SRO_DEFAULTS[scenarioId] || { schedule: "", serial: "" };
+            
+            // Check if SRO fields are required for this scenario
+            const isSRORequired = ["SN005", "SN006", "SN007", "SN024", "SN028"].includes(scenarioId);
+
+            itemDiv.innerHTML = `
+                <div class="item-header">
+                    <div class="item-title">Item ${itemCount + 1}</div>
+                    <button type="button" class="btn btn-danger" onclick="removeItem(${itemCount})">Remove</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>HS Code *</label>
+                        <input type="text" name="item_${itemCount}_hsCode" required 
+                               placeholder="e.g., 0101.2100">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Description *</label>
+                        <input type="text" name="item_${itemCount}_productDescription" required
+                               placeholder="e.g., Cotton Fabric">
+                    </div>
+                    <div class="form-group">
+                        <label>Unit of Measure *</label>
+                        <input type="text" name="item_${itemCount}_uoM" required 
+                               placeholder="e.g., Pieces, Kg, Meters" value="Numbers, pieces, units">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Quantity *</label>
+                        <input type="number" name="item_${itemCount}_quantity" required min="0" step="0.01" value="1"
+                               placeholder="e.g., 400">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Value of all Qt (Excluding Sales Tax) *</label>
+                        <input type="number" step="0.01"
+                               name="item_${itemCount}_valueSalesExcludingST"
+                               class="value-excl-st"
+                               required min="0"
+                               placeholder="e.g., 1000.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Tax Rate</label>
+                        <input type="text" name="item_${itemCount}_rate" value="${taxRate}" readonly>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Sales Tax Applicable *</label>
+                        <input type="number" step="0.01"
+                               name="item_${itemCount}_salesTaxApplicable"
+                               class="sales-tax"
+                               required min="0"
+                               readonly
+                               placeholder="Auto calculated">
+                        <small style="color: #666; margin-top: 3px;">${taxRate} of value excluding ST</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Values</label>
+                        <input type="number" step="0.01" name="item_${itemCount}_totalValues" 
+                               value="0" placeholder="0">
+                        <small style="color: #666; margin-top: 3px;">Usually 0 for standard scenarios</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Discount price(not %)</label>
+                        <input type="number" step="0.01" name="item_${itemCount}_discount" value="0"
+                               placeholder="0.00">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fixed/Notified Value/Retail Price ${['SN008','SN024','SN027','SN028'].includes(scenarioId) ? '*' : ''}</label>
+                        <input type="number" step="0.01" name="item_${itemCount}_fixedNotifiedValueOrRetailPrice" 
+                               ${['SN008','SN024','SN027','SN028'].includes(scenarioId) ? 'required' : ''} 
+                               value="${['SN027','SN028'].includes(scenarioId) ? '' : '0'}" 
+                               placeholder="${['SN027','SN028'].includes(scenarioId) ? 'e.g., 100.00' : '0.00'}">
+                    </div>
+                    <div class="form-group">
+                        <label>Sales Tax Withheld at Source</label>
+                        <input type="number" step="0.01" name="item_${itemCount}_salesTaxWithheldAtSource" 
+                               value="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Further Tax</label>
+                        <input type="number" step="0.01" name="item_${itemCount}_furtherTax" value="0"
+                               placeholder="0">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>FED Payable ${scenarioId === 'SN017' ? '*' : ''}</label>
+                        <input type="number" step="0.01" name="item_${itemCount}_fedPayable" 
+                               ${scenarioId === 'SN017' ? 'required' : ''} value="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Sale Type</label>
+                        <input type="text" name="item_${itemCount}_saleType" 
+                               value="${saleType}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Extra Tax</label>
+                        <input type="text" name="item_${itemCount}_extraTax" placeholder="Leave empty">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>SRO Schedule No. ${isSRORequired ? '*' : ''}</label>
+                        <input type="text" name="item_${itemCount}_sroScheduleNo" 
+                               ${isSRORequired ? 'required' : ''}
+                               value="${currentSRO.schedule}" 
+                               placeholder="Leave empty for standard rate">
+                        ${isSRORequired ? '<small style="color: #dc3545; margin-top: 3px;">Auto-filled for this scenario</small>' : ''}
+                    </div>
+                    <div class="form-group">
+                        <label>SRO Item Serial No. ${isSRORequired ? '*' : ''}</label>
+                        <input type="text" name="item_${itemCount}_sroItemSerialNo" 
+                               ${isSRORequired ? 'required' : ''}
+                               value="${currentSRO.serial}"
+                               placeholder="Leave empty for standard rate">
+                        ${isSRORequired ? '<small style="color: #dc3545; margin-top: 3px;">Auto-filled for this scenario</small>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(itemDiv);
+            itemCount++;
+        }
+        
+        function removeItem(index) {
+            const item = document.getElementById(`item_${index}`);
+            if (item) {
+                item.remove();
+            }
+        }
+        
+        // Add one item by default
+        addItem();
+    </script>
+    <script>
+  const SCENARIO_TAX_RATES = {
+    "SN001": 18,
+    "SN002": 18,
+    "SN005": 1,
+    "SN006": 0,
+    "SN007": 0,
+    "SN008": 18,
+    "SN016": 5,
+    "SN017": 8,
+    "SN024": 25,
+    "SN026": 18,
+    "SN027": 18,
+    "SN028": 1
+  };
+
+  const CURRENT_SCENARIO = "{{ scenario_id }}";
+  const TAX_RATE = SCENARIO_TAX_RATES[CURRENT_SCENARIO] || 0;
+</script>
+
+<script>
+  function calculateSalesTax(value) {
+    if (!value || TAX_RATE === 0) return 0;
+    return (parseFloat(value) * TAX_RATE / 100).toFixed(2);
+  }
+
+  document.addEventListener("input", function (e) {
+    if (e.target.classList.contains("value-excl-st")) {
+      const row = e.target.closest(".item-row");
+      if (!row) return;
+
+      const taxField = row.querySelector(".sales-tax");
+      if (!taxField) return;
+
+      taxField.value = calculateSalesTax(e.target.value);
+    }
+  });
+</script>
+
+</body>
+</html>
